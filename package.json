@@ -1,0 +1,29 @@
+{
+  "name": "grant-session",
+  "version": "0.0.0",
+  "description": "Session store for Grant",
+  "keywords": [],
+  "license": "MIT",
+  "homepage": "https://github.com/simov/grant-session",
+  "author": "Simeon Velichkov <simeonvelichkov@gmail.com> (https://simov.github.io)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simov/grant-session.git"
+  },
+  "dependencies": {
+    "cookie": "^0.4.1",
+    "cookie-signature": "^1.1.0"
+  },
+  "devDependencies": {},
+  "main": "./session.js",
+  "files": [
+    "session.js",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {},
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
