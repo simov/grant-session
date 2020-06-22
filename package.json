@@ -1,6 +1,6 @@
 {
   "name": "grant-session",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Session store for Grant",
   "keywords": [],
   "license": "MIT",
