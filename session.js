@@ -4,17 +4,6 @@ var cookie = require('cookie')
 var signature = require('cookie-signature')
 
 
-var handlers = {
-  node: (req, res) => ({
-    cookie: req.headers.cookie,
-    'set-cookie': res.getHeader('set-cookie')
-  }),
-  aws: (req) => ({
-    cookie: req.headers.Cookie,
-    'set-cookie': req.multiValueHeaders['Set-Cookie']
-  }),
-}
-
 module.exports = ({handler, options, get, set, remove}) => {
   var name = options.name || 'grant'
   var secret = options.secret
@@ -25,7 +14,12 @@ module.exports = ({handler, options, get, set, remove}) => {
   }
 
   return (req, res) => {
-    var headers = handlers[handler](req, res)
+    var headers = Object.keys(req.headers)
+      .filter((key) => /(?:set-)?cookie/i.test(key))
+      .reduce((all, key) => (all[key.toLowerCase()] = req.headers[key], all), {})
+    headers['set-cookie'] = headers['set-cookie'] ||
+      (req.multiValueHeaders && req.multiValueHeaders['Set-Cookie'])
+
     var id = () => {
       var data =
         headers.cookie ||
@@ -34,6 +28,7 @@ module.exports = ({handler, options, get, set, remove}) => {
       var sid = cookie.parse(data)[name]
       return sid ? signature.unsign(sid, secret) : undefined
     }
+
     var create = () => {
       var id = crypto.randomBytes(20).toString('hex')
       var sid = signature.sign(id, secret)
@@ -41,6 +36,7 @@ module.exports = ({handler, options, get, set, remove}) => {
       var values = [].concat(headers['set-cookie'], data).filter(Boolean)
       headers['set-cookie'] = values
     }
+
     return {
       get: async () => {
         var session = {grant: {}}
